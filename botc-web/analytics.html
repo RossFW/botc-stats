@@ -403,46 +403,6 @@
                 <span class="role-type-badge" id="script-detail-category">Normal</span>
             </div>
 
-            <div class="char-detail-summary">
-                <div class="char-stat-card">
-                    <div class="stat-value" id="script-detail-games">0</div>
-                    <div class="stat-label">Games</div>
-                </div>
-                <div class="char-stat-card good">
-                    <div class="stat-value" id="script-detail-good-pct">0%</div>
-                    <div class="stat-label">Good Win %</div>
-                </div>
-                <div class="char-stat-card evil">
-                    <div class="stat-value" id="script-detail-evil-pct">0%</div>
-                    <div class="stat-label">Evil Win %</div>
-                </div>
-            </div>
-
-            <!-- Per-Storyteller Breakdown -->
-            <div class="char-detail-section">
-                <h3>By Storyteller</h3>
-                <div class="table-container">
-                    <table class="analytics-table" id="script-detail-st-table">
-                        <thead>
-                            <tr>
-                                <th>Storyteller</th>
-                                <th>Good Win %</th>
-                                <th>Evil Win %</th>
-                                <th>Games</th>
-                            </tr>
-                        </thead>
-                        <tbody id="script-detail-st-body"></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Modifiers Used -->
-            <div class="char-detail-section" id="script-detail-mod-section">
-                <h3>Modifiers Used</h3>
-                <div id="script-detail-mod-list" class="char-players-list"></div>
-            </div>
-
-            <!-- Game History -->
             <div class="char-detail-section">
                 <h3>Game History</h3>
                 <div class="table-container">
@@ -458,6 +418,63 @@
                         </thead>
                         <tbody id="script-detail-games-body"></tbody>
                     </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Game Detail Modal -->
+    <div class="modal-overlay" id="game-detail-modal">
+        <div class="modal character-detail-modal">
+            <button class="modal-close">&times;</button>
+
+            <div class="char-detail-header">
+                <h2 id="game-detail-title">Game #1</h2>
+                <span class="role-type-badge" id="game-detail-script">Script</span>
+            </div>
+
+            <div class="char-detail-summary">
+                <div class="char-stat-card">
+                    <div class="stat-value" id="game-detail-date">-</div>
+                    <div class="stat-label">Date</div>
+                </div>
+                <div class="char-stat-card">
+                    <div class="stat-value" id="game-detail-winner">-</div>
+                    <div class="stat-label">Winner</div>
+                </div>
+                <div class="char-stat-card">
+                    <div class="stat-value" id="game-detail-st">-</div>
+                    <div class="stat-label">Storyteller</div>
+                </div>
+            </div>
+
+            <div id="game-detail-modifiers" class="char-detail-section" style="display:none;">
+                <h3>Modifiers</h3>
+                <div id="game-detail-mod-list" class="char-players-list"></div>
+            </div>
+
+            <div class="game-detail-teams">
+                <div class="char-detail-section">
+                    <h3 class="good-text">Good Team</h3>
+                    <div class="table-container">
+                        <table class="analytics-table">
+                            <thead>
+                                <tr><th>Player</th><th>Role</th></tr>
+                            </thead>
+                            <tbody id="game-detail-good-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="char-detail-section">
+                    <h3 class="evil-text">Evil Team</h3>
+                    <div class="table-container">
+                        <table class="analytics-table">
+                            <thead>
+                                <tr><th>Player</th><th>Role</th></tr>
+                            </thead>
+                            <tbody id="game-detail-evil-body"></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>

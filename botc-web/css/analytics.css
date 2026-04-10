@@ -787,6 +787,18 @@
     background: rgba(var(--accent-rgb), 0.1);
 }
 
+.game-detail-teams {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+@media (max-width: 768px) {
+    .game-detail-teams {
+        grid-template-columns: 1fr;
+    }
+}
+
 /* ==========================================
    MODIFIERS TAB
    ========================================== */

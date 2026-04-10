@@ -114,6 +114,7 @@ function setupEventListeners() {
     // ESC key to close modals
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
+            closeGameDetail();
             closeScriptDetail();
             closeCharacterDetail();
         }
@@ -125,6 +126,15 @@ function setupEventListeners() {
         scriptModal.querySelector('.modal-close').onclick = closeScriptDetail;
         scriptModal.addEventListener('click', (e) => {
             if (e.target === scriptModal) closeScriptDetail();
+        });
+    }
+
+    // Game detail modal close
+    const gameModal = document.getElementById('game-detail-modal');
+    if (gameModal) {
+        gameModal.querySelector('.modal-close').onclick = closeGameDetail;
+        gameModal.addEventListener('click', (e) => {
+            if (e.target === gameModal) closeGameDetail();
         });
     }
 }
@@ -639,85 +649,23 @@ function analyzeH2H() {
 // ==========================================
 
 /**
- * Show the script detail modal with deep breakdown.
+ * Show the script detail modal — game history only.
  */
 function showScriptDetail(scriptName) {
     const modal = document.getElementById('script-detail-modal');
     if (!modal || !scriptName) return;
 
-    // Header
     document.getElementById('script-detail-name').textContent = scriptName;
     const stats = currentAnalytics.scriptStats[scriptName];
     document.getElementById('script-detail-category').textContent = stats ? stats.category : 'Unknown';
 
-    // Summary stats
-    const games = stats ? stats.games : 0;
-    const goodWins = stats ? stats.good_wins : 0;
-    const evilWins = stats ? stats.evil_wins : 0;
-    document.getElementById('script-detail-games').textContent = games;
-    document.getElementById('script-detail-good-pct').textContent = games > 0 ? (goodWins / games * 100).toFixed(1) + '%' : '0%';
-    document.getElementById('script-detail-evil-pct').textContent = games > 0 ? (evilWins / games * 100).toFixed(1) + '%' : '0%';
-
-    // Get all games for this script from the current filtered set
     const scriptGames = currentAnalytics.games.filter(g => g.game_mode === scriptName);
 
-    // Per-storyteller breakdown
-    const stStats = {};
-    for (const g of scriptGames) {
-        const st = g.story_teller || 'Unknown';
-        if (!stStats[st]) stStats[st] = { games: 0, good_wins: 0, evil_wins: 0 };
-        stStats[st].games++;
-        if (g.winning_team === 'Good') stStats[st].good_wins++;
-        else stStats[st].evil_wins++;
-    }
-
-    const stBody = document.getElementById('script-detail-st-body');
-    stBody.innerHTML = '';
-    for (const [st, data] of Object.entries(stStats).sort((a, b) => b[1].games - a[1].games)) {
-        const row = document.createElement('tr');
-        const gPct = data.games > 0 ? (data.good_wins / data.games * 100).toFixed(1) : '0.0';
-        const ePct = data.games > 0 ? (data.evil_wins / data.games * 100).toFixed(1) : '0.0';
-        row.innerHTML = `
-            <td>${st.replace(/_/g, ' ')}</td>
-            <td class="good-text">${gPct}%</td>
-            <td class="evil-text">${ePct}%</td>
-            <td>${data.games}</td>
-        `;
-        stBody.appendChild(row);
-    }
-
-    // Modifiers used with this script
-    const modSection = document.getElementById('script-detail-mod-section');
-    const modList = document.getElementById('script-detail-mod-list');
-    const modGames = scriptGames.filter(g => g.modifiers &&
-        ((g.modifiers.fabled || []).length > 0 || (g.modifiers.lorics || []).length > 0));
-
-    if (modGames.length === 0) {
-        modSection.style.display = 'none';
-    } else {
-        modSection.style.display = 'block';
-        const modCounts = {};
-        for (const g of modGames) {
-            for (const f of (g.modifiers.fabled || [])) {
-                const key = f + ' (Fabled)';
-                modCounts[key] = (modCounts[key] || 0) + 1;
-            }
-            for (const l of (g.modifiers.lorics || [])) {
-                const key = l + ' (Loric)';
-                modCounts[key] = (modCounts[key] || 0) + 1;
-            }
-        }
-        modList.innerHTML = Object.entries(modCounts)
-            .sort((a, b) => b[1] - a[1])
-            .map(([name, count]) => `<span class="char-player-chip">${name.replace(/_/g, ' ')} <small>&times;${count}</small></span>`)
-            .join('');
-    }
-
-    // Game history
     const gamesBody = document.getElementById('script-detail-games-body');
     gamesBody.innerHTML = '';
     for (const g of scriptGames.sort((a, b) => b.game_id - a.game_id)) {
         const row = document.createElement('tr');
+        row.style.cursor = 'pointer';
         const modTags = [];
         if (g.modifiers) {
             for (const f of (g.modifiers.fabled || [])) modTags.push(f.replace(/_/g, ' '));
@@ -730,12 +678,81 @@ function showScriptDetail(scriptName) {
             <td>${(g.story_teller || '-').replace(/_/g, ' ')}</td>
             <td>${modTags.length > 0 ? modTags.join(', ') : '-'}</td>
         `;
+        row.addEventListener('click', () => showGameDetail(g));
         gamesBody.appendChild(row);
     }
 
-    // Show modal
     modal.classList.add('active');
     document.body.style.overflow = 'hidden';
+}
+
+/**
+ * Show the game detail modal with full player/role breakdown.
+ */
+function showGameDetail(game) {
+    const modal = document.getElementById('game-detail-modal');
+    if (!modal || !game) return;
+
+    document.getElementById('game-detail-title').textContent = `Game #${game.game_id}`;
+    document.getElementById('game-detail-script').textContent = game.game_mode || 'Unknown';
+    document.getElementById('game-detail-date').textContent = game.date ? new Date(game.date).toLocaleDateString() : '-';
+    document.getElementById('game-detail-st').textContent = (game.story_teller || '-').replace(/_/g, ' ');
+
+    const winnerEl = document.getElementById('game-detail-winner');
+    winnerEl.textContent = game.winning_team;
+    winnerEl.className = 'stat-value ' + (game.winning_team === 'Good' ? 'good-text' : 'evil-text');
+
+    // Modifiers
+    const modSection = document.getElementById('game-detail-modifiers');
+    const modList = document.getElementById('game-detail-mod-list');
+    const fabled = game.modifiers ? (game.modifiers.fabled || []) : [];
+    const lorics = game.modifiers ? (game.modifiers.lorics || []) : [];
+
+    if (fabled.length === 0 && lorics.length === 0) {
+        modSection.style.display = 'none';
+    } else {
+        modSection.style.display = 'block';
+        const tags = [];
+        for (const f of fabled) tags.push(`<span class="char-player-chip">${f.replace(/_/g, ' ')} <small>Fabled</small></span>`);
+        for (const l of lorics) tags.push(`<span class="char-player-chip">${l.replace(/_/g, ' ')} <small>Loric</small></span>`);
+        modList.innerHTML = tags.join('');
+    }
+
+    // Good team
+    const goodBody = document.getElementById('game-detail-good-body');
+    goodBody.innerHTML = '';
+    const goodPlayers = (game.players || []).filter(p => p.team === 'Good');
+    for (const p of goodPlayers) {
+        const row = document.createElement('tr');
+        const roles = (p.roles && p.roles.length > 0) ? p.roles.join(' + ') : (p.role || '-');
+        row.innerHTML = `<td>${(p.name || '-').replace(/_/g, ' ')}</td><td>${roles.replace(/_/g, ' ')}</td>`;
+        goodBody.appendChild(row);
+    }
+
+    // Evil team
+    const evilBody = document.getElementById('game-detail-evil-body');
+    evilBody.innerHTML = '';
+    const evilPlayers = (game.players || []).filter(p => p.team === 'Evil');
+    for (const p of evilPlayers) {
+        const row = document.createElement('tr');
+        const roles = (p.roles && p.roles.length > 0) ? p.roles.join(' + ') : (p.role || '-');
+        row.innerHTML = `<td>${(p.name || '-').replace(/_/g, ' ')}</td><td>${roles.replace(/_/g, ' ')}</td>`;
+        evilBody.appendChild(row);
+    }
+
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+/**
+ * Close the game detail modal.
+ */
+function closeGameDetail() {
+    const modal = document.getElementById('game-detail-modal');
+    if (modal) {
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+    }
 }
 
 /**
