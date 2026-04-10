@@ -787,10 +787,37 @@
     background: rgba(var(--accent-rgb), 0.1);
 }
 
+#game-detail-modal .character-detail-modal,
+#script-detail-modal .character-detail-modal {
+    max-width: 800px;
+}
+
 .game-detail-teams {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1rem;
+}
+
+.team-change-badge {
+    display: inline-block;
+    font-size: 0.75rem;
+    padding: 1px 6px;
+    border-radius: 4px;
+    background: rgba(249, 115, 22, 0.2);
+    color: #f97316;
+    border: 1px solid rgba(249, 115, 22, 0.3);
+    margin-left: 4px;
+}
+
+.role-arrow {
+    color: var(--text-secondary);
+    font-size: 0.85em;
+}
+
+.mod-type-label {
+    color: var(--text-secondary);
+    font-size: 0.85em;
+    font-weight: 400;
 }
 
 @media (max-width: 768px) {

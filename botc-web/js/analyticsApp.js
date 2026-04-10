@@ -713,32 +713,37 @@ function showGameDetail(game) {
     } else {
         modSection.style.display = 'block';
         const tags = [];
-        for (const f of fabled) tags.push(`<span class="char-player-chip">${f.replace(/_/g, ' ')} <small>Fabled</small></span>`);
-        for (const l of lorics) tags.push(`<span class="char-player-chip">${l.replace(/_/g, ' ')} <small>Loric</small></span>`);
+        for (const f of fabled) tags.push(`<span class="char-player-chip"><small class="mod-type-label">Fabled:</small> ${f.replace(/_/g, ' ')}</span>`);
+        for (const l of lorics) tags.push(`<span class="char-player-chip"><small class="mod-type-label">Loric:</small> ${l.replace(/_/g, ' ')}</span>`);
         modList.innerHTML = tags.join('');
     }
 
-    // Good team
-    const goodBody = document.getElementById('game-detail-good-body');
-    goodBody.innerHTML = '';
-    const goodPlayers = (game.players || []).filter(p => p.team === 'Good');
-    for (const p of goodPlayers) {
-        const row = document.createElement('tr');
-        const roles = (p.roles && p.roles.length > 0) ? p.roles.join(' + ') : (p.role || '-');
-        row.innerHTML = `<td>${(p.name || '-').replace(/_/g, ' ')}</td><td>${roles.replace(/_/g, ' ')}</td>`;
-        goodBody.appendChild(row);
+    // Render players into a tbody
+    function renderPlayers(tbody, players) {
+        tbody.innerHTML = '';
+        for (const p of players) {
+            const row = document.createElement('tr');
+            const roles = (p.roles && p.roles.length > 0) ? p.roles.join(' → ') : (p.role || '-');
+            let nameHtml = (p.name || '-').replace(/_/g, ' ');
+
+            // Flag team change
+            if (p.initial_team && p.initial_team !== p.team) {
+                nameHtml += ` <span class="team-change-badge">${p.initial_team} → ${p.team}</span>`;
+            }
+
+            // Show role progression if multiple roles
+            let rolesHtml = roles.replace(/_/g, ' ');
+            if (p.roles && p.roles.length > 1) {
+                rolesHtml = p.roles.map(r => r.replace(/_/g, ' ')).join(' <span class="role-arrow">→</span> ');
+            }
+
+            row.innerHTML = `<td>${nameHtml}</td><td>${rolesHtml}</td>`;
+            tbody.appendChild(row);
+        }
     }
 
-    // Evil team
-    const evilBody = document.getElementById('game-detail-evil-body');
-    evilBody.innerHTML = '';
-    const evilPlayers = (game.players || []).filter(p => p.team === 'Evil');
-    for (const p of evilPlayers) {
-        const row = document.createElement('tr');
-        const roles = (p.roles && p.roles.length > 0) ? p.roles.join(' + ') : (p.role || '-');
-        row.innerHTML = `<td>${(p.name || '-').replace(/_/g, ' ')}</td><td>${roles.replace(/_/g, ' ')}</td>`;
-        evilBody.appendChild(row);
-    }
+    renderPlayers(document.getElementById('game-detail-good-body'), (game.players || []).filter(p => p.team === 'Good'));
+    renderPlayers(document.getElementById('game-detail-evil-body'), (game.players || []).filter(p => p.team === 'Evil'));
 
     modal.classList.add('active');
     document.body.style.overflow = 'hidden';
