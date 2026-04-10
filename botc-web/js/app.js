@@ -3,8 +3,9 @@
  */
 
 import { recalcAll, getLeaderboard, pctToStr, getRatingDelta } from './elo.js';
-import { fetchGames } from './supabase.js';
+import { fetchGames, isDemoMode } from './supabase.js';
 import { initGameEntry, updatePlayerNames } from './gameEntry.js';
+import SITE_CONFIG from './site-config.js';
 
 // Global state
 let gameLog = [];
@@ -36,6 +37,20 @@ const winBarEvilEl = document.getElementById('win-bar-evil');
 async function init() {
     try {
         showLoading();
+
+        // Apply community name from config
+        const h1 = document.querySelector('header h1');
+        if (h1 && SITE_CONFIG.communityName) {
+            h1.textContent = SITE_CONFIG.communityName;
+        }
+
+        // Show demo banner if in demo mode
+        if (isDemoMode()) {
+            const banner = document.createElement('div');
+            banner.className = 'demo-banner';
+            banner.innerHTML = 'Demo Mode — showing sample data. <a href="https://github.com/RossFW/botc-stats#quick-start-5-steps" target="_blank">Set up your own</a>';
+            document.querySelector('.container').prepend(banner);
+        }
 
         // Fetch game data
         gameLog = await fetchGames();

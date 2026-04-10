@@ -2,7 +2,8 @@
  * Analytics Application - Main entry point for the analytics dashboard.
  */
 
-import { fetchGames } from './supabase.js';
+import { fetchGames, isDemoMode } from './supabase.js';
+import SITE_CONFIG from './site-config.js';
 import {
     StorytellerAnalytics,
     extractStorytellers,
@@ -42,6 +43,20 @@ document.addEventListener('DOMContentLoaded', async () => {
  * Load game data from Supabase.
  */
 async function loadData() {
+    // Apply community name from config
+    const h1 = document.querySelector('header h1');
+    if (h1 && SITE_CONFIG.communityName) {
+        h1.textContent = SITE_CONFIG.communityName + ' Analytics';
+    }
+
+    // Show demo banner if in demo mode
+    if (isDemoMode()) {
+        const banner = document.createElement('div');
+        banner.className = 'demo-banner';
+        banner.innerHTML = 'Demo Mode — showing sample data. <a href="https://github.com/RossFW/botc-stats#quick-start-5-steps" target="_blank">Set up your own</a>';
+        document.querySelector('.container').prepend(banner);
+    }
+
     allGames = await fetchGames();
 
     // Initialize analytics with all games

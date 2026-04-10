@@ -2,6 +2,23 @@
  * Blood on the Clocktower Stats - Dark Theme Styles
  */
 
+/* Demo banner */
+.demo-banner {
+    background: linear-gradient(135deg, #2d1b69, #1a3a5c);
+    color: #c4b5fd;
+    text-align: center;
+    padding: 0.6rem 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    border: 1px solid rgba(139, 92, 246, 0.3);
+}
+
+.demo-banner a {
+    color: #93c5fd;
+    font-weight: 600;
+}
+
 /* CSS Variables for theming */
 :root {
     --bg-primary: #1a1a2e;
