@@ -783,6 +783,10 @@
     }
 }
 
+#scripts-body tr:hover {
+    background: rgba(var(--accent-rgb), 0.1);
+}
+
 /* ==========================================
    MODIFIERS TAB
    ========================================== */

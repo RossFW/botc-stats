@@ -211,7 +211,18 @@ export async function validateAccessCodeWithLevel(code) {
  * @returns {Promise<Array>} Array of matching games (summary only)
  */
 export async function searchGames(query) {
-    if (IS_DEMO) return [];
+    if (IS_DEMO) {
+        const q = query.trim().toLowerCase();
+        const gameIdNum = parseInt(q);
+        return DEMO_GAMES.filter(g => {
+            if (!isNaN(gameIdNum) && q === String(gameIdNum)) return g.game_id === gameIdNum;
+            return (g.story_teller || '').toLowerCase().includes(q) ||
+                   (g.game_mode || '').toLowerCase().includes(q);
+        }).reverse().slice(0, 20).map(g => ({
+            game_id: g.game_id, date: g.date, game_mode: g.game_mode,
+            story_teller: g.story_teller, winning_team: g.winning_team
+        }));
+    }
 
     await initSupabase();
 
