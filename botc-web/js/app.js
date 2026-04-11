@@ -140,14 +140,30 @@ async function refreshData() {
  */
 function updateStatsSummary() {
     const totalGames = gameLog.length;
+    const noGamesMsg = document.getElementById('no-games-msg');
+
+    if (totalGames === 0) {
+        totalGamesEl.textContent = 0;
+        totalPlayersEl.textContent = 0;
+        if (winBarGoodEl) winBarGoodEl.style.display = 'none';
+        if (winBarEvilEl) winBarEvilEl.style.display = 'none';
+        if (noGamesMsg) noGamesMsg.style.display = 'block';
+        return;
+    }
+
+    // Show bar segments, hide message
+    if (winBarGoodEl) winBarGoodEl.style.display = '';
+    if (winBarEvilEl) winBarEvilEl.style.display = '';
+    if (noGamesMsg) noGamesMsg.style.display = 'none';
+
     const goodWins = gameLog.filter(g => g.winning_team === 'Good').length;
     const evilWins = gameLog.filter(g => g.winning_team === 'Evil').length;
     const uniquePlayers = new Set(gameLog.flatMap(g => g.players.map(p => p.name))).size;
 
     totalGamesEl.textContent = totalGames;
     totalPlayersEl.textContent = uniquePlayers;
-    const goodPct = totalGames > 0 ? ((goodWins / totalGames) * 100).toFixed(1) : 0;
-    const evilPct = totalGames > 0 ? ((evilWins / totalGames) * 100).toFixed(1) : 0;
+    const goodPct = ((goodWins / totalGames) * 100).toFixed(1);
+    const evilPct = ((evilWins / totalGames) * 100).toFixed(1);
     goodWinsEl.textContent = `${goodPct}%`;
     evilWinsEl.textContent = `${evilPct}%`;
     if (goodWinsCountEl) goodWinsCountEl.textContent = goodWins;

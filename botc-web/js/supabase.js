@@ -312,6 +312,31 @@ export async function updateGame(gameId, gameData, code) {
     return data;
 }
 
+/**
+ * Delete a game.
+ * @param {number} gameId - The game ID to delete
+ * @param {string} code - The edit confirmation code
+ */
+export async function deleteGame(gameId, code) {
+    if (IS_DEMO) throw new Error('Demo mode: Configure Supabase in site-config.js to delete games.');
+
+    const level = await validateAccessCodeWithLevel(code);
+    if (level !== 'edit') {
+        throw new Error('Edit access required to delete games.');
+    }
+
+    await initSupabase();
+    const { error } = await supabase
+        .from('games')
+        .delete()
+        .eq('game_id', gameId);
+
+    if (error) {
+        console.error('Error deleting game:', error);
+        throw error;
+    }
+}
+
 // ==========================================
 // SCRIPTS MANAGEMENT FUNCTIONS
 // ==========================================
@@ -347,8 +372,8 @@ export async function addScript(scriptData, code) {
     if (IS_DEMO) throw new Error('Demo mode: Configure Supabase in site-config.js to add scripts.');
 
     const level = await validateAccessCodeWithLevel(code);
-    if (level !== 'edit') {
-        throw new Error('Edit access required to add scripts');
+    if (level !== 'edit' && level !== 'submit') {
+        throw new Error('Access code required to add scripts');
     }
 
     await initSupabase();
@@ -367,4 +392,29 @@ export async function addScript(scriptData, code) {
     }
 
     return data;
+}
+
+/**
+ * Delete a script.
+ * @param {string} scriptName - The script name to delete
+ * @param {string} code - The edit confirmation code
+ */
+export async function deleteScript(scriptName, code) {
+    if (IS_DEMO) throw new Error('Demo mode: Configure Supabase in site-config.js to delete scripts.');
+
+    const level = await validateAccessCodeWithLevel(code);
+    if (level !== 'edit') {
+        throw new Error('Edit access required to delete scripts.');
+    }
+
+    await initSupabase();
+    const { error } = await supabase
+        .from('scripts')
+        .delete()
+        .eq('name', scriptName);
+
+    if (error) {
+        console.error('Error deleting script:', error);
+        throw error;
+    }
 }

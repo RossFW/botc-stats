@@ -8,6 +8,7 @@ import {
     validateAccessCodeWithLevel,
     submitGame,
     updateGame,
+    deleteGame,
     getStoredCode,
     storeCode,
     getStoredPermissionLevel,
@@ -15,7 +16,8 @@ import {
     searchGames as searchGamesApi,
     getGameById,
     fetchScripts,
-    addScript
+    addScript,
+    deleteScript
 } from './supabase.js';
 
 import { initAutocomplete } from './autocomplete.js';
@@ -27,7 +29,7 @@ let scriptsCache = null;
 // DOM Elements - Game Entry Modal
 let modal, codeStep, formStep, codeInput, verifyBtn, codeError;
 let team1Input, team2Input, evilTeamRadios, winnerRadios;
-let scriptSelect, storytellerInput, fabledInput, loricsInput, submitBtn, submitError, submitSuccess;
+let scriptSelect, storytellerInput, fabledInput, loricsInput, submitBtn, deleteGameBtn, submitError, submitSuccess;
 let formTitle, formSubtitle;
 
 // DOM Elements - Game Search Modal
@@ -63,6 +65,7 @@ export function initGameEntry(onGameAdded, playerNames) {
     fabledInput = document.getElementById('fabled-input');
     loricsInput = document.getElementById('lorics-input');
     submitBtn = document.getElementById('submit-game-btn');
+    deleteGameBtn = document.getElementById('delete-game-btn');
     submitError = document.getElementById('submit-error');
     submitSuccess = document.getElementById('submit-success');
     formTitle = document.getElementById('form-title');
@@ -191,6 +194,11 @@ function setupEventListeners() {
 
     // Submit game button
     submitBtn.addEventListener('click', submitGameForm);
+
+    // Delete game button
+    if (deleteGameBtn) {
+        deleteGameBtn.addEventListener('click', confirmDeleteGame);
+    }
 
     // Help toggle button
     const helpToggleBtn = document.getElementById('help-toggle-btn');
@@ -821,6 +829,7 @@ async function loadGameForEdit(gameId) {
         formSubtitle.textContent = 'Modify the game details below';
         formStep.classList.add('edit-mode');
         submitBtn.textContent = 'Update Game';
+        if (deleteGameBtn) deleteGameBtn.style.display = 'inline-block';
 
         // Show the game entry modal
         modal.classList.add('active');
@@ -911,6 +920,7 @@ function resetToAddMode() {
     formSubtitle.textContent = 'Enter game details below';
     formStep.classList.remove('edit-mode');
     submitBtn.textContent = 'Submit Game';
+    if (deleteGameBtn) deleteGameBtn.style.display = 'none';
     clearForm();
 }
 
@@ -935,6 +945,9 @@ function openNewScriptModal() {
 
     // Focus on the name input
     if (newScriptName) newScriptName.focus();
+
+    // Render script management list (edit permission only)
+    renderScriptManageList();
 }
 
 /**
@@ -968,12 +981,12 @@ async function saveNewScript() {
         return;
     }
 
-    // Need edit permission to add scripts
+    // Need any access code to add scripts
     const storedCode = getStoredCode();
     const level = getStoredPermissionLevel();
 
-    if (!storedCode || level !== 'edit') {
-        showError(newScriptError, 'Edit access required. Please use edit code via "Edit Game" first.');
+    if (!storedCode || (level !== 'edit' && level !== 'submit')) {
+        showError(newScriptError, 'Access code required. Please enter a code via "Add Game" first.');
         return;
     }
 
@@ -1004,5 +1017,104 @@ async function saveNewScript() {
     } finally {
         saveNewScriptBtn.disabled = false;
         saveNewScriptBtn.textContent = 'Save Script';
+    }
+}
+
+// ==========================================
+// DELETE GAME
+// ==========================================
+
+/**
+ * Confirm and delete the current game being edited.
+ */
+async function confirmDeleteGame() {
+    if (!editMode || !currentEditGameId) return;
+
+    const confirmed = window.confirm(`Are you sure you want to delete Game #${currentEditGameId}? This cannot be undone.`);
+    if (!confirmed) return;
+
+    hideError(submitError);
+    hideSuccess(submitSuccess);
+
+    try {
+        const code = getStoredCode();
+        await deleteGame(currentEditGameId, code);
+        showSuccess(submitSuccess, `Game #${currentEditGameId} deleted.`);
+
+        clearForm();
+        resetToAddMode();
+
+        if (window._onGameAdded) {
+            await window._onGameAdded();
+        }
+
+        setTimeout(() => {
+            closeModal();
+            hideSuccess(submitSuccess);
+        }, 1500);
+
+    } catch (error) {
+        showError(submitError, error.message || 'Failed to delete game.');
+        console.error('Delete error:', error);
+    }
+}
+
+// ==========================================
+// SCRIPT MANAGEMENT (DELETE)
+// ==========================================
+
+/**
+ * Render the list of existing scripts with delete buttons (edit permission only).
+ */
+function renderScriptManageList() {
+    const section = document.getElementById('script-manage-section');
+    const list = document.getElementById('script-manage-list');
+    if (!section || !list) return;
+
+    const level = getStoredPermissionLevel();
+    if (level !== 'edit' || !scriptsCache || scriptsCache.length === 0) {
+        section.style.display = 'none';
+        return;
+    }
+
+    section.style.display = 'block';
+    list.innerHTML = '';
+
+    for (const script of scriptsCache) {
+        const item = document.createElement('div');
+        item.className = 'script-manage-item';
+
+        const nameSpan = document.createElement('span');
+        nameSpan.textContent = script.name;
+
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'script-delete-btn';
+        deleteBtn.textContent = 'Delete';
+        deleteBtn.addEventListener('click', () => confirmDeleteScript(script.name));
+
+        item.appendChild(nameSpan);
+        item.appendChild(deleteBtn);
+        list.appendChild(item);
+    }
+}
+
+/**
+ * Confirm and delete a script.
+ */
+async function confirmDeleteScript(scriptName) {
+    const confirmed = window.confirm(`Delete script "${scriptName}"? This cannot be undone.`);
+    if (!confirmed) return;
+
+    try {
+        const code = getStoredCode();
+        await deleteScript(scriptName, code);
+
+        // Reload scripts and re-render
+        await loadScripts();
+        renderScriptManageList();
+
+    } catch (error) {
+        console.error('Error deleting script:', error);
+        alert(error.message || 'Failed to delete script.');
     }
 }

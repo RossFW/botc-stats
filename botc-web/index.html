@@ -45,6 +45,7 @@
                     <span class="win-bar-meta"><span id="total-games">0</span> games | <span id="total-players">0</span> players</span>
                 </div>
                 <div class="win-bar">
+                    <div class="no-games-msg" id="no-games-msg" style="display: none;">No games logged yet</div>
                     <div class="win-bar-good" id="win-bar-good">
                         <span class="win-bar-label"><span id="good-wins-count">0</span> good wins</span>
                         <span class="win-bar-pct" id="good-wins">0%</span>
@@ -235,6 +236,7 @@
 
                     <div class="form-actions">
                         <button id="submit-game-btn" class="primary-btn">Submit Game</button>
+                        <button id="delete-game-btn" class="danger-btn" style="display: none;">Delete Game</button>
                         <p id="submit-error" class="error-text" style="display: none;"></p>
                         <p id="submit-success" class="success-text" style="display: none;"></p>
                     </div>
@@ -300,6 +302,12 @@
                 <button id="save-new-script-btn" class="primary-btn">Save Script</button>
                 <p id="new-script-error" class="error-text" style="display: none;"></p>
                 <p id="new-script-success" class="success-text" style="display: none;"></p>
+            </div>
+
+            <div id="script-manage-section" style="display: none;">
+                <hr style="border-color: var(--border-color); margin: 1.5rem 0;">
+                <h4>Existing Scripts</h4>
+                <div id="script-manage-list" class="script-manage-list"></div>
             </div>
         </div>
     </div>

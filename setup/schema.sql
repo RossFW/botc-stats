@@ -62,6 +62,9 @@ CREATE POLICY "Games can be inserted" ON games
 CREATE POLICY "Games can be updated" ON games
     FOR UPDATE USING (true);
 
+CREATE POLICY "Games can be deleted" ON games
+    FOR DELETE USING (true);
+
 -- Access codes: readable for validation only
 CREATE POLICY "Access codes can be read for validation" ON access_codes
     FOR SELECT USING (true);
@@ -72,6 +75,9 @@ CREATE POLICY "Scripts are viewable by everyone" ON scripts
 
 CREATE POLICY "Scripts can be inserted" ON scripts
     FOR INSERT WITH CHECK (true);
+
+CREATE POLICY "Scripts can be deleted" ON scripts
+    FOR DELETE USING (true);
 
 -- 8. Indexes for performance
 CREATE INDEX idx_games_game_id ON games(game_id);

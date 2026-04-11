@@ -14,7 +14,7 @@ A free, open-source leaderboard and analytics dashboard for [Blood on the Clockt
 - Works on GitHub Pages (free hosting)
 - Demo mode with sample data out of the box
 
-## Quick Start (5 steps)
+## Quick Start (~20 minutes)
 
 ### 1. Create your own copy of this repo
 
@@ -85,6 +85,8 @@ const SITE_CONFIG = {
 
 ### 5. Enable GitHub Pages
 
+> **Note:** This may already be configured — check Settings > Pages first. If it already says "Deploy from a branch" with main / (root), skip this step.
+
 1. In your repo, go to **Settings** (tab at the top)
 2. Click **Pages** in the left sidebar
 3. Under "Source", select **Deploy from a branch**
@@ -123,7 +125,7 @@ All settings are in `botc-web/js/site-config.js` (edit via the pencil icon on Gi
 | `supabaseUrl` | `YOUR_SUPABASE_URL` | Your Supabase Project URL |
 | `supabaseAnonKey` | `YOUR_SUPABASE_ANON_KEY` | Your Supabase Publishable key |
 | `communityName` | `Blood on the Clocktower` | Shown in the site header |
-| `minGamesForLeaderboard` | `5` | Min games to appear on leaderboard |
+| `minGamesForLeaderboard` | `1` | Min games to appear on leaderboard |
 | `defaultRating` | `1500` | Starting ELO for new players |
 | `kFactor` | `32` | ELO volatility (higher = bigger swings) |
 
@@ -150,6 +152,10 @@ setup/
   schema.sql          # Database setup (run first)
   seed-data.sql       # Sample data for Supabase (optional)
 ```
+
+## Staying updated
+
+Template repositories don't automatically sync when the original is updated. To get new features or fixes, check back at [RossFW/botc-stats](https://github.com/RossFW/botc-stats) periodically. You can compare your version against the template to see what changed.
 
 ## License
 
