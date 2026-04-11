@@ -16,48 +16,65 @@ A free, open-source leaderboard and analytics dashboard for [Blood on the Clockt
 
 ## Quick Start (5 steps)
 
-### 1. Use this template
+### 1. Create your own copy of this repo
 
-Click the green **"Use this template"** button at the top of this repo (or fork it). This creates your own copy.
+1. Click the green **"Use this template"** button at the top of this page
+2. Select **"Create a new repository"**
+3. Give it a name (e.g., `my-botc-stats`), keep it **Public**, and click **Create repository**
 
 Your site will immediately work in **demo mode** with sample data — no setup needed to preview it.
 
 ### 2. Create a free Supabase project
 
-Go to [supabase.com](https://supabase.com) and create a free account and project. The free tier is more than enough.
+1. Go to [supabase.com](https://supabase.com) and sign up for a free account
+2. Click **New Project**
+3. Give it a name (e.g., `botc-stats`) and set a database password
+4. Wait for the project to finish creating (takes about a minute)
 
 ### 3. Set up the database
 
-In your Supabase dashboard:
-1. Go to **SQL Editor** (left sidebar)
-2. Click **New Query**
-3. Paste the contents of [`setup/schema.sql`](setup/schema.sql)
-4. Click **Run**
+1. In your Supabase project, click **SQL Editor** in the left sidebar
+2. Click the **+** button to create a new query
+3. Open the [`setup/schema.sql`](setup/schema.sql) file from this repo, copy its entire contents, and paste it into the SQL editor
+4. Click the green **Run** button (or press Cmd+Enter)
 
 This creates all the tables, security policies, and access codes.
 
-**Important:** Edit the access codes in `schema.sql` before running, or update them in **Table Editor > access_codes** after. These are the passwords your group uses to log games:
-- `submit` level: can add new games (share with your group)
-- `edit` level: can add AND edit games (keep this private)
+**Important:** The schema creates two default access codes (`change-me-submit` and `change-me-edit`). After running the SQL, go to **Table Editor** in the left sidebar, click the **access_codes** table, and change these to your own secret codes:
+- `submit` level: share this with your group so they can log games
+- `edit` level: keep this private — it allows editing existing games
 
-### 4. Configure your site
+### 4. Connect your site to Supabase
 
-Edit **`botc-web/js/site-config.js`** — this is the only file you need to change:
+You need two values from Supabase. To find them:
+1. In your Supabase project, go to **Settings** (gear icon, left sidebar)
+2. Click **API Keys** under Configuration
+3. Copy the **Project URL** (shown at the top of the General settings page, looks like `https://abcdefgh.supabase.co`)
+4. Copy the **Publishable key** (the `default` key under "Publishable key" — this is safe to use publicly)
+
+Now edit your config file on GitHub:
+1. In your new repo, navigate to **botc-web > js > site-config.js**
+2. Click the **pencil icon** (edit button) in the top right of the file
+3. Replace the placeholder values:
 
 ```javascript
 const SITE_CONFIG = {
-    supabaseUrl: 'https://your-project-id.supabase.co',
-    supabaseAnonKey: 'your-anon-key-here',
-    communityName: 'My BotC Group',
+    supabaseUrl: 'https://your-project-id.supabase.co',    // paste your Project URL
+    supabaseAnonKey: 'sb_publishable_XXXX...',              // paste your Publishable key
+    communityName: 'My BotC Group',                         // your group's name
     minGamesForLeaderboard: 5,
 };
 ```
 
-Find your Supabase URL and key in: **Dashboard > Settings > API** ("Project URL" and "anon public" key).
+4. Click **Commit changes** at the bottom
 
 ### 5. Enable GitHub Pages
 
-In your repo: **Settings > Pages > Source:** select `main` branch, folder `/ (root)`, and save.
+1. In your repo, go to **Settings** (tab at the top)
+2. Click **Pages** in the left sidebar
+3. Under "Source", select **Deploy from a branch**
+4. Set branch to **main** and folder to **/ (root)**
+5. Click **Save**
 
 Your site will be live at `https://yourusername.github.io/your-repo-name/botc-web/` within a few minutes.
 
@@ -77,12 +94,12 @@ Your site will be live at `https://yourusername.github.io/your-repo-name/botc-we
 
 ## Configuration options
 
-All settings are in `botc-web/js/site-config.js`:
+All settings are in `botc-web/js/site-config.js` (edit via the pencil icon on GitHub):
 
 | Setting | Default | Description |
 |---------|---------|-------------|
-| `supabaseUrl` | `YOUR_SUPABASE_URL` | Your Supabase project URL |
-| `supabaseAnonKey` | `YOUR_SUPABASE_ANON_KEY` | Your Supabase anon public key |
+| `supabaseUrl` | `YOUR_SUPABASE_URL` | Your Supabase Project URL |
+| `supabaseAnonKey` | `YOUR_SUPABASE_ANON_KEY` | Your Supabase Publishable key |
 | `communityName` | `Blood on the Clocktower` | Shown in the site header |
 | `minGamesForLeaderboard` | `5` | Min games to appear on leaderboard |
 | `defaultRating` | `1500` | Starting ELO for new players |
