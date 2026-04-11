@@ -500,8 +500,11 @@ function updatePlayerScriptsTable(stats) {
     const allGoodPct = stats.good_games > 0 ? (stats.good_wins / stats.good_games * 100).toFixed(1) : '0.0';
     const allEvilPct = stats.evil_games > 0 ? (stats.evil_wins / stats.evil_games * 100).toFixed(1) : '0.0';
 
+    const playerName = document.getElementById('player-select').value;
+
     const allRow = document.createElement('tr');
     allRow.className = 'total-row';
+    allRow.style.cursor = 'pointer';
     allRow.innerHTML = `
         <td><strong>All</strong></td>
         <td><strong>${allWinPct}%</strong></td>
@@ -511,6 +514,11 @@ function updatePlayerScriptsTable(stats) {
         <td class="evil-text"><strong>${allEvilPct}%</strong></td>
         <td><strong>${stats.evil_games}</strong></td>
     `;
+    allRow.addEventListener('click', () => {
+        const games = currentAnalytics.games.filter(g =>
+            g.players.some(p => p.name === playerName));
+        showGameHistory(`${playerName.replace(/_/g, ' ')} — All Games`, `${games.length} games`, games);
+    });
     tbody.appendChild(allRow);
 
     // Sort scripts by win percentage
@@ -519,8 +527,6 @@ function updatePlayerScriptsTable(stats) {
         const bPct = b[1].games > 0 ? b[1].wins / b[1].games : 0;
         return bPct - aPct;
     });
-
-    const playerName = document.getElementById('player-select').value;
 
     for (const [script, s] of scriptEntries) {
         const winPct = s.games > 0 ? (s.wins / s.games * 100).toFixed(1) : '0.0';
