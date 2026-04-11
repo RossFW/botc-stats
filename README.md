@@ -85,7 +85,13 @@ const SITE_CONFIG = {
 4. Set branch to **main** and folder to **/ (root)**
 5. Click **Save**
 
-Your site will be live at `https://yourusername.github.io/your-repo-name/botc-web/` within a few minutes.
+Your site will be live within a few minutes at:
+
+```
+https://yourusername.github.io/your-repo-name/botc-web/
+```
+
+> **Important:** The URL must end with `/botc-web/` — that's where the app lives. The base URL will just show this README.
 
 ## How to log games
 
