@@ -656,6 +656,52 @@ function analyzeH2H() {
         ? results.game_ids.join(', ')
         : '-';
 
+    // Make H2H stat cards clickable
+    const bothIn = g => g.players && g.players.some(p => p.name === player1) && g.players.some(p => p.name === player2);
+    const getTeam = (g, name) => { const p = g.players.find(p => p.name === name); return p ? p.team : null; };
+    const p1Name = player1.replace(/_/g, ' ');
+    const p2Name = player2.replace(/_/g, ' ');
+
+    // Same team — overall
+    const sameTeamCard = document.querySelector('#h2h-same-team-content .h2h-stats-row .h2h-stat-card:first-child');
+    if (sameTeamCard) {
+        sameTeamCard.style.cursor = 'pointer';
+        sameTeamCard.onclick = () => {
+            const games = currentAnalytics.games.filter(g => bothIn(g) && getTeam(g, player1) === getTeam(g, player2));
+            showGameHistory(`${p1Name} & ${p2Name} — Same Team`, `${games.length} games`, games);
+        };
+    }
+
+    // Same team — both good
+    const bothGoodCard = document.querySelector('#h2h-same-team-content .h2h-stat-card.good');
+    if (bothGoodCard) {
+        bothGoodCard.style.cursor = 'pointer';
+        bothGoodCard.onclick = () => {
+            const games = currentAnalytics.games.filter(g => bothIn(g) && getTeam(g, player1) === 'Good' && getTeam(g, player2) === 'Good');
+            showGameHistory(`${p1Name} & ${p2Name} — Both Good`, `${games.length} games`, games);
+        };
+    }
+
+    // Same team — both evil
+    const bothEvilCard = document.querySelector('#h2h-same-team-content .h2h-stat-card.evil');
+    if (bothEvilCard) {
+        bothEvilCard.style.cursor = 'pointer';
+        bothEvilCard.onclick = () => {
+            const games = currentAnalytics.games.filter(g => bothIn(g) && getTeam(g, player1) === 'Evil' && getTeam(g, player2) === 'Evil');
+            showGameHistory(`${p1Name} & ${p2Name} — Both Evil`, `${games.length} games`, games);
+        };
+    }
+
+    // Opposite teams — all
+    const oppGamesEl = document.querySelector('.h2h-opp-games');
+    if (oppGamesEl) {
+        oppGamesEl.style.cursor = 'pointer';
+        oppGamesEl.onclick = () => {
+            const games = currentAnalytics.games.filter(g => bothIn(g) && getTeam(g, player1) !== getTeam(g, player2));
+            showGameHistory(`${p1Name} vs ${p2Name} — Opposite Teams`, `${games.length} games`, games);
+        };
+    }
+
     // Show results
     resultsDiv.style.display = 'block';
     noResultsDiv.style.display = 'none';
@@ -1095,10 +1141,11 @@ function showCharacterDetail(characterName, roleType, elo) {
         }
     }
 
-    // Wire up game history button
+    // Wire up game history button — close character modal first
     const gamesBtn = document.getElementById('char-detail-games-btn');
     if (gamesBtn) {
         gamesBtn.onclick = () => {
+            closeCharacterDetail();
             const games = currentAnalytics.games.filter(g =>
                 g.players && g.players.some(p =>
                     p.role === characterName || (p.roles && p.roles.includes(characterName))));
