@@ -50,14 +50,16 @@ You need two values from Supabase. To find them:
 
 **Project URL:**
 1. Go to **Settings** (gear icon, left sidebar) > **General**
-2. Copy the **Project URL** (looks like `https://abcdefgh.supabase.co`)
+2. Find the **Project ID** and click **Copy** (it will look something like `lusnxllufwpptzwswctj`)
+3. Your Project URL is: `https://` + your Project ID + `.supabase.co`
+   - Example: if your Project ID is `lusnxllufwpptzwswctj`, your URL is `https://lusnxllufwpptzwswctj.supabase.co`
 
 **Anon Key:**
 1. Go to **Settings** > **API Keys**
 2. Click the **"Legacy anon, service_role API keys"** tab
-3. Copy the **anon public** key (starts with `eyJhb...`) — click the **Copy** button next to it
+3. Find the **anon public** key and click **Copy** (it's a long string starting with `eyJhb...`)
 
-> **Important:** Use the key from the "Legacy" tab, NOT the "Publishable key" tab. The legacy `anon public` key is what the app needs.
+> **Important:** Use the key from the **"Legacy"** tab (starts with `eyJhb...`), NOT the "Publishable key" tab (starts with `sb_publishable_`).
 
 Now edit your config file on GitHub:
 1. In your new repo, navigate to **botc-web > js > site-config.js**
@@ -66,8 +68,8 @@ Now edit your config file on GitHub:
 
 ```javascript
 const SITE_CONFIG = {
-    supabaseUrl: 'https://your-project-id.supabase.co',    // paste your Project URL
-    supabaseAnonKey: 'eyJhbGci...',                         // paste your anon public key
+    supabaseUrl: 'https://your-project-id.supabase.co',    // https:// + your Project ID + .supabase.co
+    supabaseAnonKey: 'eyJhbGci...',                         // your anon public key from the Legacy tab
     communityName: 'My BotC Group',                         // your group's name
     minGamesForLeaderboard: 5,
 };
