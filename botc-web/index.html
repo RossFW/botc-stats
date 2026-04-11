@@ -141,22 +141,39 @@
                         <div class="help-content" id="help-content">
                             <p><strong>Player format:</strong> <code>Name Role [TeamHint]</code></p>
                             <p class="help-detail">One player per line. Autocomplete suggests names and roles as you type.</p>
+
+                            <p class="help-detail" style="margin-top: 8px;"><strong>Names:</strong> Names can be anything — just be consistent so stats track correctly. Use underscores for spaces.</p>
                             <div class="help-examples">
                                 <div class="help-example">
-                                    <code>Jane_Doe Imp</code>
-                                    <span>Basic entry</span>
+                                    <code>Jane Imp</code>
+                                    <span>First name only</span>
                                 </div>
                                 <div class="help-example">
-                                    <code>John_Smith Snake_Charmer+Witch</code>
+                                    <code>Jane_Doe Imp</code>
+                                    <span>Full name (underscore = space)</span>
+                                </div>
+                                <div class="help-example">
+                                    <code>JaneD Imp</code>
+                                    <span>Nickname — whatever your group uses</span>
+                                </div>
+                            </div>
+
+                            <p class="help-detail" style="margin-top: 8px;"><strong>Roles &amp; team changes:</strong></p>
+                            <div class="help-examples">
+                                <div class="help-example">
+                                    <code>John Snake_Charmer+Witch</code>
                                     <span>Multiple roles (use <strong>+</strong>)</span>
                                 </div>
                                 <div class="help-example">
-                                    <code>Mike_Chen Chef Good->Evil</code>
+                                    <code>Mike Chef Good->Evil</code>
                                     <span>Team change (use <strong>-></strong>)</span>
                                 </div>
                             </div>
                             <p class="help-note"><em>Put team-changers in their FINAL team's section.</em></p>
-                            <p class="help-detail" style="margin-top: 8px;"><strong>Fabled &amp; Lorics:</strong> Optional comma-separated fields below the script. These are game-level modifiers, not player roles.</p>
+
+                            <p class="help-detail" style="margin-top: 8px;"><strong>Storyteller:</strong> Multiple storytellers? Use <strong>+</strong> (e.g., <code>Jane+Mike</code>).</p>
+
+                            <p class="help-detail" style="margin-top: 4px;"><strong>Fabled &amp; Lorics:</strong> Optional comma-separated fields below the script. These are game-level modifiers, not player roles.</p>
                         </div>
                     </div>
 
