@@ -662,44 +662,62 @@ function analyzeH2H() {
     const p1Name = player1.replace(/_/g, ' ');
     const p2Name = player2.replace(/_/g, ' ');
 
-    // Same team — overall
-    const sameTeamCard = document.querySelector('#h2h-same-team-content .h2h-stats-row .h2h-stat-card:first-child');
-    if (sameTeamCard) {
-        sameTeamCard.style.cursor = 'pointer';
-        sameTeamCard.onclick = () => {
-            const games = currentAnalytics.games.filter(g => bothIn(g) && getTeam(g, player1) === getTeam(g, player2));
-            showGameHistory(`${p1Name} & ${p2Name} — Same Team`, `${games.length} games`, games);
+    function makeClickable(el, label, filterFn) {
+        if (!el) return;
+        el.style.cursor = 'pointer';
+        el.onclick = () => {
+            const games = currentAnalytics.games.filter(g => bothIn(g) && filterFn(g));
+            showGameHistory(label, `${games.length} games`, games);
         };
     }
 
-    // Same team — both good
-    const bothGoodCard = document.querySelector('#h2h-same-team-content .h2h-stat-card.good');
-    if (bothGoodCard) {
-        bothGoodCard.style.cursor = 'pointer';
-        bothGoodCard.onclick = () => {
-            const games = currentAnalytics.games.filter(g => bothIn(g) && getTeam(g, player1) === 'Good' && getTeam(g, player2) === 'Good');
-            showGameHistory(`${p1Name} & ${p2Name} — Both Good`, `${games.length} games`, games);
-        };
+    // Same team cards
+    makeClickable(
+        document.querySelector('#h2h-same-team-content .h2h-stats-row .h2h-stat-card:first-child'),
+        `${p1Name} & ${p2Name} — Same Team`,
+        g => getTeam(g, player1) === getTeam(g, player2)
+    );
+    makeClickable(
+        document.querySelector('#h2h-same-team-content .h2h-stat-card.good'),
+        `${p1Name} & ${p2Name} — Both Good`,
+        g => getTeam(g, player1) === 'Good' && getTeam(g, player2) === 'Good'
+    );
+    makeClickable(
+        document.querySelector('#h2h-same-team-content .h2h-stat-card.evil'),
+        `${p1Name} & ${p2Name} — Both Evil`,
+        g => getTeam(g, player1) === 'Evil' && getTeam(g, player2) === 'Evil'
+    );
+
+    // Opposite teams — all cards
+    const oppPlayers = document.querySelectorAll('.h2h-opp-player');
+    const oppFilter = g => getTeam(g, player1) !== getTeam(g, player2);
+
+    // P1 and P2 overall cards
+    if (oppPlayers[0]) {
+        makeClickable(oppPlayers[0].querySelector('.h2h-stat-card:not(.good):not(.evil)'),
+            `${p1Name} vs ${p2Name} — Opposite Teams`, oppFilter);
+    }
+    if (oppPlayers[1]) {
+        makeClickable(oppPlayers[1].querySelector('.h2h-stat-card:not(.good):not(.evil)'),
+            `${p1Name} vs ${p2Name} — Opposite Teams`, oppFilter);
     }
 
-    // Same team — both evil
-    const bothEvilCard = document.querySelector('#h2h-same-team-content .h2h-stat-card.evil');
-    if (bothEvilCard) {
-        bothEvilCard.style.cursor = 'pointer';
-        bothEvilCard.onclick = () => {
-            const games = currentAnalytics.games.filter(g => bothIn(g) && getTeam(g, player1) === 'Evil' && getTeam(g, player2) === 'Evil');
-            showGameHistory(`${p1Name} & ${p2Name} — Both Evil`, `${games.length} games`, games);
-        };
-    }
+    // P1 As Good / P2 As Evil (same row = same games: P1 is Good, P2 is Evil)
+    const p1GoodFilter = g => getTeam(g, player1) === 'Good' && getTeam(g, player2) === 'Evil';
+    const p1EvilFilter = g => getTeam(g, player1) === 'Evil' && getTeam(g, player2) === 'Good';
 
-    // Opposite teams — all
-    const oppGamesEl = document.querySelector('.h2h-opp-games');
-    if (oppGamesEl) {
-        oppGamesEl.style.cursor = 'pointer';
-        oppGamesEl.onclick = () => {
-            const games = currentAnalytics.games.filter(g => bothIn(g) && getTeam(g, player1) !== getTeam(g, player2));
-            showGameHistory(`${p1Name} vs ${p2Name} — Opposite Teams`, `${games.length} games`, games);
-        };
+    if (oppPlayers[0]) {
+        makeClickable(oppPlayers[0].querySelector('.h2h-stat-card.good'),
+            `${p1Name} (Good) vs ${p2Name} (Evil)`, p1GoodFilter);
+        makeClickable(oppPlayers[0].querySelector('.h2h-stat-card.evil'),
+            `${p1Name} (Evil) vs ${p2Name} (Good)`, p1EvilFilter);
+    }
+    if (oppPlayers[1]) {
+        // P2's cards are inverted: Evil first (aligns with P1 Good), Good second (aligns with P1 Evil)
+        makeClickable(oppPlayers[1].querySelector('.h2h-stat-card.evil'),
+            `${p1Name} (Good) vs ${p2Name} (Evil)`, p1GoodFilter);
+        makeClickable(oppPlayers[1].querySelector('.h2h-stat-card.good'),
+            `${p1Name} (Evil) vs ${p2Name} (Good)`, p1EvilFilter);
     }
 
     // Show results
