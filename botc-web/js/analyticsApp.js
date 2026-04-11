@@ -972,8 +972,9 @@ const EXPECTED_GOOD_WIN_PCT = {
 
 // Evil team composition by player count (standard BotC rules)
 const EVIL_TEAM_BY_SIZE = {
-    5: '1D + 1M', 6: '1D + 1M', 7: '1D + 1M', 8: '1D + 1M', 9: '1D + 2M',
-    10: '1D + 2M', 11: '1D + 2M', 12: '1D + 2M', 13: '1D + 3M', 14: '1D + 3M', 15: '1D + 3M'
+    5: '1 Demon, 1 Minion', 6: '1 Demon, 1 Minion', 7: '1 Demon, 1 Minion', 8: '1 Demon, 1 Minion',
+    9: '1 Demon, 2 Minions', 10: '1 Demon, 2 Minions', 11: '1 Demon, 2 Minions', 12: '1 Demon, 2 Minions',
+    13: '1 Demon, 3 Minions', 14: '1 Demon, 3 Minions', 15: '1 Demon, 3 Minions'
 };
 
 /**
