@@ -151,9 +151,7 @@ function updateStatsSummary() {
         return;
     }
 
-    // Show bar segments, hide message
-    if (winBarGoodEl) winBarGoodEl.style.display = '';
-    if (winBarEvilEl) winBarEvilEl.style.display = '';
+    // Hide message
     if (noGamesMsg) noGamesMsg.style.display = 'none';
 
     const goodWins = gameLog.filter(g => g.winning_team === 'Good').length;
@@ -168,8 +166,16 @@ function updateStatsSummary() {
     evilWinsEl.textContent = `${evilPct}%`;
     if (goodWinsCountEl) goodWinsCountEl.textContent = goodWins;
     if (evilWinsCountEl) evilWinsCountEl.textContent = evilWins;
-    if (winBarGoodEl) winBarGoodEl.style.width = `${goodPct}%`;
-    if (winBarEvilEl) winBarEvilEl.style.width = `${evilPct}%`;
+
+    // Hide bar segment when 0%, show when > 0%
+    if (winBarGoodEl) {
+        winBarGoodEl.style.display = goodWins > 0 ? '' : 'none';
+        winBarGoodEl.style.width = `${goodPct}%`;
+    }
+    if (winBarEvilEl) {
+        winBarEvilEl.style.display = evilWins > 0 ? '' : 'none';
+        winBarEvilEl.style.width = `${evilPct}%`;
+    }
 }
 
 /**
