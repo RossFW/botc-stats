@@ -40,9 +40,15 @@ Your site will immediately work in **demo mode** with sample data — no setup n
 
 This creates all the tables, security policies, and access codes.
 
-**Important:** The schema creates two default access codes (`change-me-submit` and `change-me-edit`). After running the SQL, go to **Table Editor** in the left sidebar, click the **access_codes** table, and change these to your own secret codes:
-- `submit` level: share this with your group so they can log games
-- `edit` level: keep this private — it allows editing existing games
+**Important — change your access codes!** The schema creates two default codes that you **must** change before sharing your site:
+
+1. In Supabase, click **Table Editor** in the left sidebar
+2. Click the **access_codes** table
+3. Double-click each code value to edit it and set your own secret passwords:
+   - `change-me-submit` → your submit code (share only with your group — this lets people log new games)
+   - `change-me-edit` → your edit code (keep this to yourself — this lets you edit or fix existing games)
+
+> **Keep both codes private to your group.** Anyone with the submit code can add games to your leaderboard.
 
 ### 4. Connect your site to Supabase
 
