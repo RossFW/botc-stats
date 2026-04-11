@@ -853,3 +853,47 @@
         grid-template-columns: 1fr;
     }
 }
+
+/* ==========================================
+   GAME SIZE TAB
+   ========================================== */
+
+.game-size-header {
+    margin-bottom: 1.5rem;
+}
+
+.game-size-filters {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.game-size-filters label {
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.game-size-filters select {
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    min-width: 200px;
+}
+
+.game-size-explanation {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+}
+
+.game-size-explanation a {
+    color: var(--accent-blue);
+}
+
+#game-size-body tr:hover {
+    background: rgba(var(--accent-rgb), 0.1);
+}

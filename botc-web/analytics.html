@@ -68,6 +68,7 @@
                 <button class="tab-btn" data-tab="players">Players</button>
                 <button class="tab-btn" data-tab="head-to-head">Head-to-Head</button>
                 <button class="tab-btn" data-tab="modifiers">Modifiers</button>
+                <button class="tab-btn" data-tab="game-size">Game Size</button>
             </div>
 
             <!-- Scripts Tab -->
@@ -379,6 +380,40 @@
                             </tbody>
                         </table>
                     </div>
+                </div>
+            </div>
+
+            <!-- Game Size Tab -->
+            <div id="game-size-tab" class="tab-content">
+                <div class="game-size-header">
+                    <div class="game-size-filters">
+                        <label for="game-size-player-filter">Player:</label>
+                        <select id="game-size-player-filter">
+                            <option value="All">All Players</option>
+                        </select>
+                    </div>
+                    <p class="game-size-explanation">
+                        <strong>Expected</strong> rates assume random executions, no character abilities, and optimal skip-at-4 strategy.
+                        Differences from expected reflect your group's skill, character choices, and meta.
+                        <a href="https://github.com/RossFW/BotC_Probability" target="_blank">Methodology</a>
+                    </p>
+                </div>
+                <div class="table-container">
+                    <table class="analytics-table" id="game-size-table">
+                        <thead>
+                            <tr>
+                                <th>Players</th>
+                                <th>Evil Team</th>
+                                <th>Games</th>
+                                <th>Good Win %</th>
+                                <th>Evil Win %</th>
+                                <th>Expected Good %</th>
+                                <th>Expected Evil %</th>
+                            </tr>
+                        </thead>
+                        <tbody id="game-size-body">
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>

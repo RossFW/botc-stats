@@ -73,12 +73,14 @@ async function loadData() {
 
     // Populate script filter dropdown
     populateScriptFilterDropdown();
+    populateGameSizePlayerFilter();
 
     // Update all displays
     updateSummary();
     updateScriptsTab();
     updateCharactersTab();
     updateModifiersTab();
+    updateGameSizeTab();
 }
 
 /**
@@ -105,6 +107,10 @@ function setupEventListeners() {
 
     // Head-to-head analyze button
     document.getElementById('h2h-analyze-btn').addEventListener('click', analyzeH2H);
+
+    // Game size player filter
+    const gameSizeFilter = document.getElementById('game-size-player-filter');
+    if (gameSizeFilter) gameSizeFilter.addEventListener('change', updateGameSizeTab);
 
     // Table sorting
     document.querySelectorAll('.analytics-table th[data-sort]').forEach(th => {
@@ -261,6 +267,8 @@ function onFilterChange() {
     updateScriptsTab();
     updateCharactersTab();
     updateModifiersTab();
+    updateGameSizeTab();
+    populateGameSizePlayerFilter();
 
     // Reset player tab
     document.getElementById('player-select').value = '';
@@ -950,6 +958,114 @@ function renderModifierTable(tbodyId, stats, modType) {
         });
         tbody.appendChild(row);
     }
+}
+
+// ==========================================
+// GAME SIZE TAB
+// ==========================================
+
+// Expected Good win % from DP toy model (random executions, no abilities)
+// Source: https://github.com/RossFW/BotC_Probability
+const EXPECTED_GOOD_WIN_PCT = {
+    7: 54, 8: 51, 9: 59, 10: 49, 11: 59, 12: 54, 13: 59, 14: 53, 15: 62
+};
+
+// Evil team composition by player count (standard BotC rules)
+const EVIL_TEAM_BY_SIZE = {
+    5: '1D + 1M', 6: '1D + 1M', 7: '1D + 1M', 8: '1D + 1M', 9: '1D + 2M',
+    10: '1D + 2M', 11: '1D + 2M', 12: '1D + 2M', 13: '1D + 3M', 14: '1D + 3M', 15: '1D + 3M'
+};
+
+/**
+ * Update the game size tab.
+ */
+function updateGameSizeTab() {
+    const playerFilter = document.getElementById('game-size-player-filter').value;
+    const tbody = document.getElementById('game-size-body');
+    tbody.innerHTML = '';
+
+    // Count games by player count
+    const bySize = {};
+    for (const g of currentAnalytics.games) {
+        if (!g.players) continue;
+
+        // Apply player filter
+        if (playerFilter !== 'All' && !g.players.some(p => p.name === playerFilter)) continue;
+
+        const size = g.players.length;
+        if (!bySize[size]) bySize[size] = { games: 0, good_wins: 0, evil_wins: 0 };
+        bySize[size].games++;
+        if (g.winning_team === 'Good') bySize[size].good_wins++;
+        else bySize[size].evil_wins++;
+    }
+
+    // Sort by player count
+    const sizes = Object.keys(bySize).map(Number).sort((a, b) => a - b);
+
+    if (sizes.length === 0) {
+        const row = document.createElement('tr');
+        row.innerHTML = '<td colspan="7" style="text-align:center; opacity:0.5;">No games found</td>';
+        tbody.appendChild(row);
+        return;
+    }
+
+    for (const size of sizes) {
+        const data = bySize[size];
+        const goodPct = data.games > 0 ? (data.good_wins / data.games * 100).toFixed(1) : '0.0';
+        const evilPct = data.games > 0 ? (data.evil_wins / data.games * 100).toFixed(1) : '0.0';
+        const expectedGood = EXPECTED_GOOD_WIN_PCT[size];
+        const expectedEvil = expectedGood ? (100 - expectedGood) : null;
+        const evilTeam = EVIL_TEAM_BY_SIZE[size] || '?';
+
+        const row = document.createElement('tr');
+        row.style.cursor = 'pointer';
+
+        // Highlight deviation from expected
+        let goodClass = 'good-text';
+        let evilClass = 'evil-text';
+
+        row.innerHTML = `
+            <td><strong>${size}</strong></td>
+            <td>${evilTeam}</td>
+            <td>${data.games}</td>
+            <td class="${goodClass}">${goodPct}%</td>
+            <td class="${evilClass}">${evilPct}%</td>
+            <td style="opacity:0.6">${expectedGood != null ? expectedGood + '%' : '-'}</td>
+            <td style="opacity:0.6">${expectedEvil != null ? expectedEvil + '%' : '-'}</td>
+        `;
+
+        row.addEventListener('click', () => {
+            const games = currentAnalytics.games.filter(g => {
+                if (!g.players || g.players.length !== size) return false;
+                if (playerFilter !== 'All' && !g.players.some(p => p.name === playerFilter)) return false;
+                return true;
+            });
+            const label = playerFilter !== 'All'
+                ? `${playerFilter.replace(/_/g, ' ')} — ${size}-player games`
+                : `${size}-player games`;
+            showGameHistory(label, `${games.length} games`, games);
+        });
+
+        tbody.appendChild(row);
+    }
+}
+
+/**
+ * Populate the game size player filter dropdown.
+ */
+function populateGameSizePlayerFilter() {
+    const select = document.getElementById('game-size-player-filter');
+    if (!select) return;
+
+    const playerNames = currentAnalytics.getPlayerNames();
+    // Keep "All Players" option, clear the rest
+    select.innerHTML = '<option value="All">All Players</option>';
+    playerNames.forEach(name => {
+        const option = document.createElement('option');
+        option.value = name;
+        option.textContent = name.replace(/_/g, ' ');
+        select.appendChild(option);
+    });
 }
 
 // ==========================================
