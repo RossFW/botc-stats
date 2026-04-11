@@ -47,10 +47,17 @@ This creates all the tables, security policies, and access codes.
 ### 4. Connect your site to Supabase
 
 You need two values from Supabase. To find them:
-1. In your Supabase project, go to **Settings** (gear icon, left sidebar)
-2. Click **API Keys** under Configuration
-3. Copy the **Project URL** (shown at the top of the General settings page, looks like `https://abcdefgh.supabase.co`)
-4. Copy the **Publishable key** (the `default` key under "Publishable key" — this is safe to use publicly)
+
+**Project URL:**
+1. Go to **Settings** (gear icon, left sidebar) > **General**
+2. Copy the **Project URL** (looks like `https://abcdefgh.supabase.co`)
+
+**Anon Key:**
+1. Go to **Settings** > **API Keys**
+2. Click the **"Legacy anon, service_role API keys"** tab
+3. Copy the **anon public** key (starts with `eyJhb...`) — click the **Copy** button next to it
+
+> **Important:** Use the key from the "Legacy" tab, NOT the "Publishable key" tab. The legacy `anon public` key is what the app needs.
 
 Now edit your config file on GitHub:
 1. In your new repo, navigate to **botc-web > js > site-config.js**
@@ -60,7 +67,7 @@ Now edit your config file on GitHub:
 ```javascript
 const SITE_CONFIG = {
     supabaseUrl: 'https://your-project-id.supabase.co',    // paste your Project URL
-    supabaseAnonKey: 'sb_publishable_XXXX...',              // paste your Publishable key
+    supabaseAnonKey: 'eyJhbGci...',                         // paste your anon public key
     communityName: 'My BotC Group',                         // your group's name
     minGamesForLeaderboard: 5,
 };
