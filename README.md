@@ -108,10 +108,11 @@ https://yourusername.github.io/your-repo-name/botc-web/
 5. Optionally add any Fabled or Lorics that were in play
 6. Submit
 
-**Input format:**
-- Basic: `Sarah_Lin Imp`
-- Multiple roles: `Tom_Nguyen Snake_Charmer+Witch`
-- Team change: `Mike_Chen Chef Good->Evil` (put in their FINAL team)
+**Input format:** `Name Role` — one player per line. Names can be anything (`Sarah`, `Sarah_Lin`, `SarahL`). Use underscores for spaces in names.
+- Basic: `Sarah Imp`
+- Full name: `Sarah_Lin Imp`
+- Multiple roles: `Tom Snake_Charmer+Witch`
+- Team change: `Mike Chef Good->Evil` (put in their FINAL team)
 
 ## Configuration options
 
