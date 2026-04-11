@@ -77,7 +77,7 @@ const SITE_CONFIG = {
     supabaseUrl: 'https://your-project-id.supabase.co',    // https:// + your Project ID + .supabase.co
     supabaseAnonKey: 'eyJhbGci...',                         // your anon public key from the Legacy tab
     communityName: 'My BotC Group',                         // your group's name
-    minGamesForLeaderboard: 5,
+    minGamesForLeaderboard: 1,
 };
 ```
 
@@ -85,7 +85,7 @@ const SITE_CONFIG = {
 
 ### 5. Enable GitHub Pages
 
-> **Note:** This may already be configured — check Settings > Pages first. If it already says "Deploy from a branch" with main / (root), skip this step.
+> **Note:** This may already be configured — check Settings > Pages first. If it already says "Deploy from a branch" with main / (root), skip to the URL below.
 
 1. In your repo, go to **Settings** (tab at the top)
 2. Click **Pages** in the left sidebar

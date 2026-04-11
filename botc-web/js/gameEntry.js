@@ -829,7 +829,9 @@ async function loadGameForEdit(gameId) {
         formSubtitle.textContent = 'Modify the game details below';
         formStep.classList.add('edit-mode');
         submitBtn.textContent = 'Update Game';
-        if (deleteGameBtn) deleteGameBtn.style.display = 'inline-block';
+        if (deleteGameBtn && getStoredPermissionLevel() === 'edit') {
+            deleteGameBtn.style.display = 'inline-block';
+        }
 
         // Show the game entry modal
         modal.classList.add('active');
