@@ -155,7 +155,14 @@ setup/
 
 ## Staying updated
 
-Template repositories don't automatically sync when the original is updated. To get new features or fixes, check back at [RossFW/botc-stats](https://github.com/RossFW/botc-stats) periodically. You can compare your version against the template to see what changed.
+Template repositories don't automatically sync when the original is updated. To get new features or bug fixes:
+
+1. Check [RossFW/botc-stats](https://github.com/RossFW/botc-stats) for updates
+2. Create a new repo from the template (click "Use this template" again)
+3. Paste your `site-config.js` settings into the new copy
+4. Update your GitHub Pages to point to the new repo
+
+Your game data is safe in Supabase — it's not stored in the repo, so you won't lose anything.
 
 ## License
 
