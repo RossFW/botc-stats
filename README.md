@@ -45,7 +45,7 @@ This creates all the tables, security policies, and access codes.
 1. In Supabase, click **Table Editor** in the left sidebar
 2. Click the **access_codes** table
 3. Right-click a row and select **Edit row** to change each code:
-   - `change-me-submit` → your submit code (share only with your group — this lets people log new games)
+   - `change-me-submit` → your add code (share only with your group — this lets people log new games)
    - `change-me-edit` → your edit code (keep this to yourself — this lets you edit or fix existing games)
 
 > **Keep both codes private to your group.** Anyone with the submit code can add games to your leaderboard.

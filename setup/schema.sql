@@ -44,7 +44,7 @@ ON CONFLICT (name) DO NOTHING;
 -- 'submit' level: can add new games
 -- 'edit' level: can add AND edit existing games
 INSERT INTO access_codes (code, description, permission_level) VALUES
-    ('change-me-submit', 'Submit access code - share with your group', 'submit'),
+    ('change-me-submit', 'Add access code - share with your group', 'submit'),
     ('change-me-edit', 'Edit access code - keep this private', 'edit');
 
 -- 6. Enable Row Level Security
