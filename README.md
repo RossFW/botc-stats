@@ -9,7 +9,7 @@ A free, open-source leaderboard and analytics dashboard for [Blood on the Clockt
 - Per-player rating history charts
 - Analytics dashboard: scripts, characters, players, storytellers, head-to-head matchups
 - Works on GitHub Pages (free website/hosting) to share with friends
-- Quick game logging with autocomplete for player names and 250+ characters
+- Quick game logging with autocomplete for player names and characters
 - Colorblind-friendly mode
 
 ## Quick Start (~20 minutes)
