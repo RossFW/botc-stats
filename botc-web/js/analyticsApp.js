@@ -379,6 +379,7 @@ function updateScriptsTab() {
 
         const row = document.createElement('tr');
         row.className = 'total-row';
+        row.style.cursor = 'pointer';
         row.innerHTML = `
             <td><strong>${cat} Total</strong></td>
             <td><span class="category-badge ${cat.toLowerCase()}">${cat}</span></td>
@@ -389,6 +390,13 @@ function updateScriptsTab() {
             <td><strong>${totals.games}</strong></td>
             <td></td>
         `;
+        row.addEventListener('click', () => {
+            const games = currentAnalytics.games.filter(g => {
+                const scriptStats = currentAnalytics.scriptStats[g.game_mode];
+                return scriptStats && scriptStats.category === cat;
+            });
+            showGameHistory(`${cat} Total`, `${games.length} games`, games);
+        });
         tbody.appendChild(row);
     }
 }
@@ -666,9 +674,6 @@ function analyzeH2H() {
     document.getElementById('p2-evil-pct').textContent = results.opposite_teams[player2].when_evil.win_pct;
 
     // Game IDs
-    document.getElementById('h2h-game-ids-list').textContent = results.game_ids.length > 0
-        ? results.game_ids.join(', ')
-        : '-';
 
     // Make H2H stat cards clickable
     const bothIn = g => g.players && g.players.some(p => p.name === player1) && g.players.some(p => p.name === player2);
