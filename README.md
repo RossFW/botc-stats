@@ -7,12 +7,10 @@ A free, open-source leaderboard and analytics dashboard for [Blood on the Clockt
 **Features:**
 - ELO-based leaderboard with player rankings
 - Per-player rating history charts
-- Analytics dashboard: scripts, characters, players, head-to-head matchups
-- Fabled and Loric modifier tracking
+- Analytics dashboard: scripts, characters, players, storytellers, head-to-head matchups
+- Works on GitHub Pages (free website/hosting) to share with friends
 - Game entry with smart autocomplete for 250+ characters
 - Colorblind-friendly mode
-- Works on GitHub Pages (free hosting)
-- Demo mode with sample data out of the box
 
 ## Quick Start (~20 minutes)
 
